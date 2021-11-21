@@ -30,25 +30,49 @@ const request = require("request");
 // 	});
 // };
 
-const fetchCoordsById = function (ip, callback) {
-	request(`https://freegeoip.app/json/${ip}`, (error, response, body) => {
-		if (error) {
-			callback(error, null);
-			return;
-		}
-		if (response.statusCode !== 200) {
-			const msg = `Status Code ${response.statusCode} when fetching coordinates for IP. Response: ${body}`;
-			callback(Error(msg), null);
-			return;
-		}
-		const { latitude, longitude } = JSON.parse(body);
-		if (body) {
-			callback(null, { latitude, longitude });
-		} else {
-			callback(null, `ip not found`);
-		}
-	});
+// const fetchCoordsById = function (ip, callback) {
+// 	request(`https://freegeoip.app/json/${ip}`, (error, response, body) => {
+// 		if (error) {
+// 			callback(error, null);
+// 			return;
+// 		}
+// 		if (response.statusCode !== 200) {
+// 			const msg = `Status Code ${response.statusCode} when fetching coordinates for IP. Response: ${body}`;
+// 			callback(Error(msg), null);
+// 			return;
+// 		}
+// 		const { latitude, longitude } = JSON.parse(body);
+// 		if (body) {
+// 			callback(null, { latitude, longitude });
+// 		} else {
+// 			callback(null, `ip not found`);
+// 		}
+// 	});
+// };
+
+const fetchISSFlyOverTimes = function(coordinates, callback) {
+  request(
+    `https://iss-pass.herokuapp.com/json/?lat=${coordinates.latitude}&lon=${coordinates.longitude}`,
+    (error, response, body) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+      if (response.statusCode !== 200) {
+        const msg = `Status Code ${response.statusCode} when fetching flyover times IP. Response: ${body}`;
+        callback(Error(msg), null);
+        return;
+      }
+      const { risetime, duration } = JSON.parse(body);
+      if (body) {
+        callback(null, { risetime, duration });
+      } else {
+        callback(null, ` not found`);
+      }
+    }
+  );
 };
 
 //module.exports = { fetchMyIP };
-module.exports = { fetchCoordsById };
+//module.exports = { fetchCoordsById };
+module.exports = { fetchISSFlyOverTimes };
