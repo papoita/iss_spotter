@@ -11,12 +11,31 @@ const fetchMyIP = function () {
 };
 const fetchCoordsByIP = function (body) {
 	const ip = JSON.parse(body).ip;
-	return request(`https://api.ipify.org?format=json${ip}`);
+	return request(`https://freegeoip.app/json/${ip}`);
 };
 const fetchISSFlyOverTimes = function (body) {
-	const { latitude, longitude } = JSON.parse(body).data;
-	const url = `https://iss-pass.herokuapp.com/json/?lat=${latitude}&lon=${longitude}`;
+	const { latitude, longitude } = JSON.parse(body);
+	const url = `http://api.open-notify.org/iss-pass.json?lat=${latitude}&lon=${longitude}`;
 	return request(url);
 };
 
-module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
+const nextISSTimesForMyLocation = function (callback) {
+	return fetchMyIP().then((ipAddress) => {
+		fetchCoordsByIP(ipAddress).then((coords) => {
+			fetchISSFlyOverTimes(coords).then((data) => {
+				const { response } = JSON.parse(data);
+
+				callback(null, response);
+			});
+		});
+	});
+	// .then(fetchCoordsByIP)
+	// .then(fetchISSFlyOverTimes)
+	// .then((data) => {
+	//
+	// });
+};
+
+module.exports = { nextISSTimesForMyLocation };
+
+//module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };

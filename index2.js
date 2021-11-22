@@ -1,12 +1,18 @@
 /** @format */
+const { nextISSTimesForMyLocation } = require("./iss_promised");
 
-const {
-	fetchMyIP,
-	fetchCoordsByIP,
-	fetchISSFlyOverTimes,
-} = require("./iss_promised");
+// see index.js for printPassTimes
+// copy it from there, or better yet, moduralize and require it in both files
 
-fetchMyIP()
-	.then(fetchCoordsByIP)
-	.then(fetchISSFlyOverTimes)
-	.then((body) => console.log(body)); //body will now be the response body (JSON string) returned from our second API call
+// Call
+// nextISSTimesForMyLocation()
+// 	.then((passTimes) => {
+// 		console.log("name:", passTimes);
+// 		//printPassTimes(passTimes);
+// 	})
+// 	.catch((error) => {
+// 		console.log("It didn't work: ", error.message);
+// 	});
+nextISSTimesForMyLocation((error, result) => {
+	console.log(result);
+});
